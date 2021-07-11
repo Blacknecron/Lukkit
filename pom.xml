@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.luaj</groupId>
             <artifactId>luaj-jse</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2-ncrn</version>
         </dependency>
 
         <!-- Unirest -->
