@@ -3,7 +3,7 @@
 
     <groupId>nz.co.jammehcow.lukkit</groupId>
     <artifactId>Lukkit</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.2-ncrn</version>
 
     <packaging>jar</packaging>
 
