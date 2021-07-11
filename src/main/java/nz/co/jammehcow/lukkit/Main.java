@@ -286,11 +286,19 @@ public class Main extends JavaPlugin {
         return true;
     }
 
+    public File getJavaJar(String jarname) {
+        return new File(this.getDataFolder().getAbsolutePath() + File.separator + "jars" + File.separator + jarname);
+    }
+
     private void checkConfig() {
         // Get the config by relative path
         File cfg = new File(this.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
         // Save the config if it doesn't exist
         if (!cfg.exists()) this.saveDefaultConfig();
+
+        // Create jars dir
+        new File(this.getDataFolder().getAbsolutePath() + File.separator + "jars").mkdirs();
+
 
         // Check the config version against the internal version
         if (this.getConfig().getInt("cfg-version") != CFG_VERSION) {

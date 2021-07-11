@@ -9,6 +9,7 @@ import nz.co.jammehcow.lukkit.environment.wrappers.ConfigWrapper;
 import nz.co.jammehcow.lukkit.environment.wrappers.LoggerWrapper;
 import nz.co.jammehcow.lukkit.environment.wrappers.PluginWrapper;
 import nz.co.jammehcow.lukkit.environment.wrappers.UtilitiesWrapper;
+import nz.co.jammehcow.lukkit.environment.plugin.LukkitPluginClassLoader;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -410,6 +411,8 @@ public class LukkitPlugin implements Plugin {
             }
         });
 
+        LukkitPluginClassLoader pluginClassLoader = new LukkitPluginClassLoader(this.getClass().getClassLoader());
+
         globals.set("import", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue luaValue) {
@@ -419,13 +422,31 @@ public class LukkitPlugin implements Plugin {
                         path = "org.bukkit" + path.substring(1);
                     if (path.startsWith("#"))
                         path = "nz.co.jammehcow.lukkit.environment" + path.substring(1);
-                    return CoerceJavaToLua.coerce(Class.forName(path));
+                    return CoerceJavaToLua.coerce(Class.forName(path, true, pluginClassLoader));
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 return NIL;
             }
         });
+
+        globals.set("importjar", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue luaValue) {
+                File jar = Main.instance.getJavaJar(luaValue.checkjstring());
+                if (!jar.exists()) {
+                    return LuaValue.FALSE;
+                }
+                try{
+                    pluginClassLoader.addJar(jar);
+                } catch(Exception e) {
+                    return LuaValue.FALSE;
+                }
+                return LuaValue.TRUE;
+            }
+        });
+
+
         globals.set("newInstance", new VarArgFunction() {
             @Override
             public LuaValue invoke(Varargs vargs) {
